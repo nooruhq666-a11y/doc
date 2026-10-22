@@ -481,7 +481,7 @@ margin-top: 10%;
     <input type="text" id="rectoInput" class="input-with-bottom-border" placeholder="Aucune photo sélectionnée" readonly>
     <div id="rectoPreview" class="photo-preview"></div>
     <input type="file" id="rectoPhoto" accept="image/*" capture="environment" style="display: none;">
-    <button type="button" class="btn-capture" onclick="ouvrirCamera('rectoPreview', 'rectoInput')">Prendre photo recto</button>
+    <button type="button" class="btn-capture" onclick="document.getElementById('rectoPhoto').click()">Prendre photo recto</button>
 </div>
 		  
 		  <!-- Petite fine barre bleue -->
@@ -493,7 +493,7 @@ margin-top: 10%;
     <input type="text" id="versoInput" class="input-with-bottom-border" placeholder="Aucune photo sélectionnée" readonly>
     <div id="versoPreview" class="photo-preview"></div>
     <input type="file" id="versoPhoto" accept="image/*" capture="environment" style="display: none;">
-    <button type="button" class="btn-capture" onclick="ouvrirCamera('versoPreview', 'versoInput')">Prendre photo verso</button>
+    <button type="button" class="btn-capture" onclick="document.getElementById('versoPhoto').click()">Prendre photo verso</button>
 </div>
         
         <!-- Bouton Valider -->
